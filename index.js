@@ -12,24 +12,45 @@ const client = redis.createClient({
 
 
 
-express()
-  .use(express.static(path.join(__dirname, 'public')))
-  .set('views', path.join(__dirname, 'views'))
-  .set('view engine', 'ejs')
-  .get('/', (req, res) => res.render('pages/index'))
-  .listen(PORT, () => console.log(`Listening on ${ PORT }`))
+const app = express();
+
+  app.use(express.static(path.join(__dirname, 'public')))
+  app.set('views', path.join(__dirname, 'views'))
+  app.set('view engine', 'ejs')
+  //app.get('/', (req, res) => res.render('pages/index'))
+  app.listen(PORT, () => console.log(`Listening on ${ PORT }`))
+
+
+  app.get('/', (req, res) => {
+
+    client.hgetall("product:87685", function(err, value) {
+      if (err) throw err;
+      console.log(value);
+
+      return res.send(value);
+    });
+
+  });
+
+
+  app.get('/products/:productId', (req, res) => {
+    //console.log('->' + req.params.productId);
+    client.hgetall(req.params.productId, function(err, value) {
+      if (err) throw err;
+      console.log(value);
+
+      return res.send(value);
+    });
+  });
 
 
   client.on("error", function(error) {
-    console.error(error);
+    console.error('->' + error);
   });
 
  
-  client.hgetall("product:87685", function(err, value) {
-    if (err) throw err;
-    console.log(value);
-  });
+  
 
   function foo(){
-    
+
   }
