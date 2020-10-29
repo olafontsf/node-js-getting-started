@@ -34,7 +34,7 @@ const app = express();
 
 
   app.get('/products/:productId', (req, res) => {
-    //console.log('->' + req.params.productId);
+    //console.log('-->' + req.params.productId);
     client.hgetall(req.params.productId, function(err, value) {
       if (err) throw err;
       console.log(value);
@@ -42,6 +42,7 @@ const app = express();
       return res.send(value);
     });
   });
+
 
 
   client.on("error", function(error) {
